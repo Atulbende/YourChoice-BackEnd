@@ -1,12 +1,9 @@
-import 'dotenv/config'
-import express from 'express';
-import cors from 'cors';
-import bcrypt   from'bcrypt';
+import dotenv from 'dotenv'
+import {app} from './app.js'
 import database  from './database/index.js';
-const app= express();
-app.use(express.json());
-// app.use(cors());
-database().then(()=>{
+dotenv.config({path:'./env'});
+database().then((res)=>{
+    console.log('dd:',res)
     app.listen(process.env.PORT || 3000,()=>{   
         console.log('Connected');
     });
