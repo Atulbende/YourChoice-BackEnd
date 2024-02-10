@@ -8,9 +8,6 @@ const pool =   mysql.createPool({
     database:DATABASE_NAME
 })
 pool.getConnection((err,con)=>{
-    if(err)
-    throw err;
-    console.log('Database connected successfully');
     con.release()
 })
 export default pool;
