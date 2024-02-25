@@ -8,7 +8,7 @@ app.use(express.json());
 app.use(cors());
 const Salt=10;
 const db = mysql.createConnection({
-            host:'localhost',
+            host:'127.0.0.1',
             user:'root',
             password:'SAVtech',
             database:'dashboard'
