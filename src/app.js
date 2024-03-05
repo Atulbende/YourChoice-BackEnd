@@ -1,7 +1,7 @@
-import express from "express"
-import cors from "cors"
-
-import cookieParser from "cookie-parser"
+import express from "express";
+import cors from "cors";
+import { CookiesOptions } from "./config/cookiesConfig.js";
+import cookieParser from "cookie-parser";
 const app = express();
 const corsOptions = {
     origin: ['http://127.0.0.1:3000', 'http://localhost:3000'],
@@ -10,10 +10,15 @@ const corsOptions = {
     credentials: true // Enable credentials (cookies, authorization headers, etc)
 };
 app.use(cors(corsOptions));
-app.use(cookieParser());
+app.use(cookieParser({
+    httpOnly: true, //accessible only by web server 
+    secure: true, //https
+    sameSite: 'none', //cross-site cookie 
+    maxAge: Date.now() + 1000*60*30//cookie expiry: set to match rT
+}));
 app.use(express.json());
-app.use(express.urlencoded({extended: true}))
-app.use(express.static("public"))
+app.use(express.urlencoded({extended: true}));
+app.use(express.static("public"));
 
 // Administration Routers
 import userRouters from "./routers/user.router.js"

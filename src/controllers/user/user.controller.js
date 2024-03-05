@@ -46,7 +46,6 @@ const userSinghUp = _async(async(req,res)=>{
         const resPassword=result[0]?.Per_Password;
         const curRefreshTokon=result[0]?.Per_RefreshToken;
         const RefreshToken = req.cookies?._sessionRId;
-        console.log('RefreshToken:',RefreshToken);
         // If user not found then return  402
         if(resPassword==='-1' || !resPassword)  return res.send (new ApiError(402,false,"User Not Register"));
         // If user not Active then return 402
@@ -56,27 +55,23 @@ const userSinghUp = _async(async(req,res)=>{
             // If password succussfull compire and status is active then create token 
                   if(hashPassword && varStatus==='Active'){
                     // Check refresh Token and AccessToken
-                        console.log('req.cookies?._sessionRId:',req.cookies?._sessionRId)
                      if(!!req.cookies?._sessionRId && req.cookies?._sessionRId === curRefreshTokon){
                         // console.log('Token:',req.cookie?._sessionRId,curRefreshTokon)
                         console.log('::::::1')
-                        const accessToken= await JWTServices.generateAccessToken(varUserId);
+                        const accessToken= await JWTServices.generateAccessToken({userId:varUserId,userName:req.body.loginUserName});
                         res.cookie('_sessionId',accessToken)
                         // return [accessToken];
                         return   res.send(new APIResponse(200,"Login Succussfully!",{Roles:varRoles,accessTokenId:accessToken}));
-              
+        
                      }else{
-                       const [accessToken,refreshToken]=  await JWTServices.generateRefreshAccessToken(varUserId);
-                       console.log('::::::2')
+                       const [accessToken,refreshToken]=  await JWTServices.generateRefreshAccessToken({userId:varUserId,userName:req.body.loginUserName});
                        res.cookie('_sessionId',accessToken)
                        res.cookie('_sessionRId',refreshToken)
                        const getRefreshResponse = await  query('call UserRefreshTokenUpdate(?,?,@Per_Result);',[varUserId,refreshToken]);
                        return   res.send(new APIResponse(200,"Login Succussfully!",{Roles:varRoles,accessTokenId:accessToken}));
-               
                     //    return [accessToken,refreshToken];
                      }
-
-                        //    const [accessToken,refreshToken]=await JWTServices.generateRefreshAccessToken(req.body.loginUserName);
+                //    const [accessToken,refreshToken]=await JWTServices.generateRefreshAccessToken(req.body.loginUserName);
                     // Store refresh Token in user database 
                      // if Refresh Token is store successfully then return 200 and return role m Access token   
                 //    if(getRefreshResponse[0]?.Per_Result==="200"){

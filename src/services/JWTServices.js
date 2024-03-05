@@ -28,7 +28,7 @@ export class JWTServices{
     }
     static  async  generateAccessToken(_id) {
         try {
-            const token = jwt.sign({ data: _id }, process.env.JWT_SECRET, { expiresIn: "10s" });
+            const token = jwt.sign({ data: _id }, process.env.JWT_SECRET, { expiresIn: "5m" });
             return token;
         } catch (error) {
             console.log(error)
@@ -37,7 +37,7 @@ export class JWTServices{
     
     static async generateRefreshToken  (_id) {
         try {
-            const refreshtoken = jwt.sign({ data: _id }, process.env.JWT_SECRET, { expiresIn: "20s" });
+            const refreshtoken = jwt.sign({ data: _id }, process.env.JWT_SECRET, { expiresIn: "1d" });
             return refreshtoken;
         } catch (error) {
             console.log(error)
