@@ -10,17 +10,14 @@ const corsOptions = {
     credentials: true // Enable credentials (cookies, authorization headers, etc)
 };
 app.use(cors(corsOptions));
-app.use(cookieParser({
-    httpOnly: true, //accessible only by web server 
-    secure: true, //https
-    sameSite: 'none', //cross-site cookie 
-    maxAge: Date.now() + 1000*60*30//cookie expiry: set to match rT
-}));
+app.use(cookieParser(CookiesOptions));
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use(express.static("public"));
 
 // Administration Routers
 import userRouters from "./routers/user.router.js"
+import appKeywordRouters from './routers/app/keyword.router.js'
 app.use('/api/v1/user',userRouters);
+app.use('/api/v1/app',appKeywordRouters);
 export { app }

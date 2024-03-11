@@ -1,5 +1,5 @@
 import pool from './index.js';
-const query = async (sql, values) => {
+const executeQuery = async (sql, values) => {
   try {
     return   new Promise((resolve,reject)=>{
       pool.query(sql,values,(err,result)=>{
@@ -17,4 +17,4 @@ const query = async (sql, values) => {
 
 };
 
-export default query ;
+export default executeQuery ;

@@ -28,16 +28,15 @@ export class JWTServices{
     }
     static  async  generateAccessToken(_id) {
         try {
-            const token = jwt.sign({ data: _id }, process.env.JWT_SECRET, { expiresIn: "5m" });
+             const token = jwt.sign({ data: _id }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRE_ACCESS_TOKAN });
             return token;
         } catch (error) {
             console.log(error)
         }
     }
-    
     static async generateRefreshToken  (_id) {
         try {
-            const refreshtoken = jwt.sign({ data: _id }, process.env.JWT_SECRET, { expiresIn: "1d" });
+            const refreshtoken = jwt.sign({ data: _id }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRE_REFRESH_TOKEN });
             return refreshtoken;
         } catch (error) {
             console.log(error)
