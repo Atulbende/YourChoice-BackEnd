@@ -59,18 +59,17 @@ const userLogin = _async(async(req,res)=>{
                     // Check refresh Token and AccessToken
                      if(!!req.cookies?._sessionRId && req.cookies?._sessionRId === curRefreshTokon){
                         // console.log('Token:',req.cookie?._sessionRId,curRefreshTokon)
-                        console.log('::::::1')
                         const accessToken= await JWTServices.generateAccessToken({userId:varUserId,userName:req.body.loginUserName});
                         res.cookie('_sessionId',accessToken,CookiesOptions)
                         // return [accessToken];
-                        return   res.send(new APIResponse(200,"Login Succussfully!",{Roles:varRoles,accessTokenId:accessToken}));
+                        return   res.send(new APIResponse(200,"Login Succussfully!",{Roles:varRoles,accessTokenId:accessToken,refreshTokenId:RefreshToken}));
         
                      }else{
                        const [accessToken,refreshToken]=  await JWTServices.generateRefreshAccessToken({userId:varUserId,userName:req.body.loginUserName});
                        res.cookie('_sessionId',accessToken,CookiesOptions)
                        res.cookie('_sessionRId',refreshToken,CookiesOptions)
                        const getRefreshResponse = await  executeQuery('call UserRefreshTokenUpdate(?,?,@Per_Result);',[varUserId,refreshToken]);
-                       return   res.send(new APIResponse(200,"Login Succussfully!",{Roles:varRoles,accessTokenId:accessToken}));
+                       return   res.send(new APIResponse(200,"Login Succussfully!",{Roles:varRoles,accessTokenId:accessToken,refreshTokenId:refreshToken}));
                     //    return [accessToken,refreshToken];
                      }
                 //    const [accessToken,refreshToken]=await JWTServices.generateRefreshAccessToken(req.body.loginUserName);
@@ -94,7 +93,6 @@ const userLogin = _async(async(req,res)=>{
 
 const userLogOut =_async(async(req,res)=>{       
       const result=await  executeQuery('call logout(?,@Per_isLogout)',[req?.userId]);
-        console.log('q:',result);
         if(result[0].Per_isLogout){
           res.clearCookie('_sessionId',CookiesOptions).clearCookie('_sessionRId',CookiesOptions)
          .send (new APIResponse(204,"Logout successfully"));
@@ -102,4 +100,15 @@ const userLogOut =_async(async(req,res)=>{
         res.send (new APIResponse(204,"user not Exists"));   
         }
 });
-export {userSinghUp,userLogin,userLogOut}
+const refreshSession = _async(async(req,res)=>{
+    const userData=  await executeQuery('select * from users where RefreshToken=?',[req.body.refreshToken]);
+   
+    if(userData.RefreshToken===req.cookies?._sessionRId){
+        const accessToken= await JWTServices.generateAccessToken({userId:userData.Pid,userName:userData.UserName});
+        res.clearCookie('_sessionId',CookiesOptions)
+        res.cookie('_sessionId',accessToken,CookiesOptions)
+         return   res.send(new APIResponse(201,"Token Refreshed",{accessTokenId:accessToken}));
+                 
+        }
+})
+export {userSinghUp,userLogin,userLogOut,refreshSession}

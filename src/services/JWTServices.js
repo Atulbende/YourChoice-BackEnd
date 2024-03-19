@@ -21,10 +21,19 @@ export class JWTServices{
         }
     }
     static  async verifyAccessToken(_token){
+    try {
+        
         return jwt.verify(_token,process.env.JWT_SECRET);
+    } catch (error) {
+      console.log('verifyAccessToken:',error)
+    }
     }
     static async  verifyRefreshToken(_token){
-        return jwt.verify(_token,process.env.JWT_SECRET);
+        try {
+            return jwt.verify(_token,process.env.JWT_SECRET);
+    } catch (error) {
+        console.log('verifyRefreshToken:',error)
+    }
     }
     static  async  generateAccessToken(_id) {
         try {
@@ -32,6 +41,7 @@ export class JWTServices{
             return token;
         } catch (error) {
             console.log(error)
+           
         }
     }
     static async generateRefreshToken  (_id) {
