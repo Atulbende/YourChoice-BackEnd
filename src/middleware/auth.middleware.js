@@ -8,10 +8,10 @@ import { CookiesOptions } from '../config/cookiesConfig.js';
         const token=req?.cookies?._sessionId || req?.headers?.Authorization.split(' ')[1];
         const refreshToken = req?.cookies?._sessionRId;
         const user = await JWTServices.verifyAccessToken(token)
-        const Rid = await JWTServices.verifyRefreshToken(refreshToken)
+        const Rid  =  await JWTServices.verifyRefreshToken(refreshToken);
         if(!Rid){
             res.clearCookie('_sessionId',CookiesOptions).clearCookie('_sessionRId',CookiesOptions)
-            return   res.status(405).json(new ApiError(405,false,`Refresh Token Expired`));
+            return   res.status(403).json(new ApiError(403,false,`Refresh Token Expired`));
         }
         if(!!user?.data?.userId){
             const result= await executeQuery('call authCheck(?,@Per_Status);',[user?.data?.userId]);
@@ -20,10 +20,10 @@ import { CookiesOptions } from '../config/cookiesConfig.js';
                     req.userId=user?.data?.userId;
                     next(); 
             }else{
-                return   res.send (new ApiError(404,false,`Token Expired`));
+                return    res.status(401).json(new ApiError(401,false,`User not active`));
             }
     }else{
-        return   res.status(404).json(new ApiError(404,false,`Token Expired `))
+        return   res.status(403).json(new ApiError(403,false,`Token Expired`))
     }
     // } catch (error) {
     //     console.log('error:',error);

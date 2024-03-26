@@ -1,5 +1,7 @@
 import pool from './index.js';
+import {sanitizeResponse} from '../utils/index.js'
 const executeQuery = async (sql, values) => {
+  
   try {
     return   new Promise((resolve,reject)=>{
       pool.query(sql,values,(err,result)=>{
@@ -7,7 +9,7 @@ const executeQuery = async (sql, values) => {
             reject(result);
             return;
         }  
-        resolve(result[0])
+        resolve(sanitizeResponse(result))
       })
     })
   } catch (error) {

@@ -5,6 +5,7 @@ import {ApiError} from '../../utils/_error.js'
 import {APIResponse} from '../../utils/_response.js'
 import {JWTServices}  from '../../services/JWTServices.js';
 import { CookiesOptions } from '../../config/cookiesConfig.js';
+import { getNewObj,com_message } from '../../utils/index.js';
 // Sample Request Data
 // Signup_Email: 'atul.bende@gmail.co',
 // Signup_UserName: 'atul400',
@@ -19,20 +20,20 @@ const userSinghUp = _async(async(req,res)=>{
                             setTimeout(async()=>{
                             const result = await  executeQuery('call SignupSave(?,?,?,@Per_Result);',[req.body.Signup_Email,req.body.Signup_UserName,hashPassword])
                             if(result[0].Per_Result=='-1'){
-                                res.send (new ApiError(404,'data',"Record not found",false,result[0].Per_Result));
+                                res.status(404).json(new ApiError(404,'data',"Record not found",false,result[0].Per_Result));
                             }else if(result[0].Per_Result=='1'){
-                                res.send (new APIResponse(200,"Singup successfully please contact admin"));
+                                res.status(201).json(new APIResponse(201,"Singup successfully please contact admin"));
                             }
                         },2300);
                         }else{
                             // return APIError();
-                            res.send (new ApiError(404,'data',err,false,result[0].Per_Result));
+                            res.status(404).json(new ApiError(404,'Encrption error ',err,false,result[0].Per_Result));
                                 
                         }   
                     
                     });
         } catch (error) {
-            res.send( new ApiError(409,error));
+            res.status(405).json( new ApiError(405,error));
         }
            });
         //Check user Name and password
@@ -49,9 +50,9 @@ const userLogin = _async(async(req,res)=>{
         const curRefreshTokon=result[0]?.Per_RefreshToken;
         const RefreshToken = req.cookies?._sessionRId;
         // If user not found then return  402
-        if(resPassword==='-1' || !resPassword)  return res.send (new ApiError(402,false,"User Not Register"));
+        if(resPassword==='-1' || !resPassword) return res.status(404).json(new ApiError(404,false,"User Not Register"));
         // If user not Active then return 402
-        if(varStatus!=='Active') return   res.send (new ApiError(402,false,"User Not Active Please Contact Admin"));
+        if(varStatus!=='Active') return   res.status(401).json (new ApiError(401,false,"User Not Active Please Contact Admin"));
         // Compire password encrypted passowrd    
         bcrypt.compare(varPassword,resPassword,async(err,hashPassword)=>{
             // If password succussfull compire and status is active then create token 
@@ -80,7 +81,7 @@ const userLogin = _async(async(req,res)=>{
                 //       }
                     // if password not correct
                   }else{
-                    return   res.send (new ApiError(402,false,"Please Enter Correct Password"));
+                    return   res.status(402) (new ApiError(402,false,"Please Enter Correct Password"));
                   }
                     
                 });
@@ -95,20 +96,54 @@ const userLogOut =_async(async(req,res)=>{
       const result=await  executeQuery('call logout(?,@Per_isLogout)',[req?.userId]);
         if(result[0].Per_isLogout){
           res.clearCookie('_sessionId',CookiesOptions).clearCookie('_sessionRId',CookiesOptions)
-         .send (new APIResponse(204,"Logout successfully"));
+         .send(new APIResponse(204,"Logout successfully"));
         }else{
-        res.send (new APIResponse(204,"user not Exists"));   
+        res.send(new APIResponse(204,"user not Exists "));   
         }
 });
 const refreshSession = _async(async(req,res)=>{
-    const userData=  await executeQuery('select * from users where RefreshToken=?',[req.body.refreshToken]);
-   
-    if(userData.RefreshToken===req.cookies?._sessionRId){
-        const accessToken= await JWTServices.generateAccessToken({userId:userData.Pid,userName:userData.UserName});
+    const userData=  await executeQuery('select * from com_users where RefreshToken=?',[req.body.refreshToken]);
+ 
+    if(userData[0]?.RefreshToken===req.cookies?._sessionRId){
+        const accessToken= await JWTServices.generateAccessToken({userId:userData[0]?.Pid,userName:userData[0]?.UserName});
         res.clearCookie('_sessionId',CookiesOptions)
         res.cookie('_sessionId',accessToken,CookiesOptions)
-         return   res.send(new APIResponse(201,"Token Refreshed",{accessTokenId:accessToken}));
-                 
+       return  res.send(new APIResponse(205,"Token Refreshed",{accessTokenId:accessToken}));
         }
 })
-export {userSinghUp,userLogin,userLogOut,refreshSession}
+// user Role Save
+const getRoles=_async(async(req,res)=>{
+    try {
+        const rolesArray=  await executeQuery('select * from get_role_vw') || [];
+            return      res.send(new APIResponse(200,"Roles list",{rolesArray:rolesArray}));
+    } catch (error) {
+        console.log('getRoles:',error);
+    }
+    
+})
+const getGridUsers=_async(async(req,res)=>{
+    const usersGrids=  await executeQuery('select * from get_grid_user_vw') || [];
+    return      res.send(new APIResponse(200,"users Grid",{usersGrids:usersGrids}));
+})
+
+const openUser=_async(async(req,res)=>{
+        const _id=req?.body?.Pid; 
+        // const user=  await executeQuery('select * from get_grid_user_vw where') || [];
+        // const result=await  executeQuery('call open_record(?,?,@Per_Result);',[]);
+        if(_id===-1){
+        const result = await  executeQuery(`SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME=?;`,['com_users']);
+        res.result=getNewObj(result)
+        }else{
+        const result = await  executeQuery(`SELECT Pid,Email,UserName,Status,Roles FROM com_users WHERE Pid=?;`,[_id]);
+        res.result=result;
+    }   
+    const requiredfields = await  executeQuery(`select FieldsArray from requiredfields where TableName=?;`,['com_users']);
+    res.required=JSON.parse(requiredfields[0].FieldsArray.replace(/'/g, '"'));
+    return res.send(new APIResponse(200,"loaded",{result:res.result,required:res.required}));
+})
+const saveUser=_async(async(req,res)=>{
+    const result = await  executeQuery('call UserSave(?,@Per_Result);',[JSON.stringify(req.body)]);
+    const _msg =com_message(result[0].Per_Result);
+    return res.send(new APIResponse(200,"loaded",{result:_msg}));
+})
+export {userSinghUp,userLogin,userLogOut,refreshSession,getRoles,getGridUsers,openUser,saveUser}
