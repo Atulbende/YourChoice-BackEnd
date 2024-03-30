@@ -81,7 +81,7 @@ const userLogin = _async(async(req,res)=>{
                 //       }
                     // if password not correct
                   }else{
-                    return   res.status(402) (new ApiError(402,false,"Please Enter Correct Password"));
+                    return   res.status(402).json(new ApiError(402,false,"Please Enter Correct Password"));
                   }
                     
                 });

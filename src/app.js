@@ -18,6 +18,8 @@ app.use(express.static("public"));
 // Administration Routers
 import userRouters from "./routers/user.router.js"
 import appKeywordRouters from './routers/app/keyword.router.js'
+import commonRouters from './routers/common.router.js'
 app.use('/api/v1/user',userRouters);
 app.use('/api/v1/app',appKeywordRouters);
+app.use('/api/v1/common',commonRouters)
 export { app }

@@ -14,8 +14,6 @@ const getNewObj=(_obj)=>{
   return [newObj]
 }
 const com_message=(id)=>{
-  
-
   return responseCodes.find((_v)=>Number(_v.id)===Number(id));
 }
 
