@@ -13,7 +13,7 @@ const codes={
       "202": "Accepted",
     //   "203": "Non-Authoritative Information",
       "204": "logout",
-      "205": "Refresh Session",
+      "206": "Some Other Person LoginedIn!",
     //   "206": "Partial Content",
     //   "207": "Multi-Status",
     //   "208": "Already Reported",
