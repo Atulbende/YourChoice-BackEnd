@@ -1,3 +1,3 @@
-export const DATABASE_NAME='dashboard';
+export const DATABASE_NAME='saloon_yourchoice';
 
 

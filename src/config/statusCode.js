@@ -14,7 +14,7 @@ const codes={
     //   "203": "Non-Authoritative Information",
       "204": "logout",
       "205": "Refresh Session",
-    //   "206": "Partial Content",
+      "206": "Some Other Person LoginedIn!",
     //   "207": "Multi-Status",
     //   "208": "Already Reported",
     //   "226": "IM Used"

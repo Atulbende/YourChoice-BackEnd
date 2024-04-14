@@ -52,6 +52,7 @@ const userLogin = _async(async(req,res)=>{
         // If user not found then return  402
         if(resPassword==='-1' || !resPassword) return res.status(404).json(new ApiError(404,false,"User Not Register"));
         // If user not Active then return 402
+        console.log('varStatus::',varStatus);
         if(varStatus!=='Active') return   res.status(401).json (new ApiError(401,false,"User Not Active Please Contact Admin"));
         // Compire password encrypted passowrd    
         bcrypt.compare(varPassword,resPassword,async(err,hashPassword)=>{
@@ -109,7 +110,9 @@ const refreshSession = _async(async(req,res)=>{
         res.clearCookie('_sessionId',CookiesOptions)
         res.cookie('_sessionId',accessToken,CookiesOptions)
        return  res.send(new APIResponse(205,"Token Refreshed",{accessTokenId:accessToken}));
-        }
+    }else{
+        return  res.send(new APIResponse(206,"Some Other Person LoginedIn!"));
+    }
 })
 // user Role Save
 const getRoles=_async(async(req,res)=>{

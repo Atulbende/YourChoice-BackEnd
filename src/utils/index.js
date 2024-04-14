@@ -6,6 +6,9 @@ const sanitizeResponse=(_result)=>{
       return _result;
     }
   }
+  const removeNullfromObject=()=>{
+    
+  }
 const getNewObj=(_obj)=>{
   const newObj={};
   _obj.forEach(_v => {

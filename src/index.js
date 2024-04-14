@@ -1,7 +1,6 @@
 import dotenv from 'dotenv'
 import {app} from './app.js'
 dotenv.config({path:'./.env'});
-console.log('process.env.PORT:',process.env.PORT)
 app.listen(process.env.PORT || 8000,()=>{   
         console.log('Connected');
 });
