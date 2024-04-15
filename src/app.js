@@ -4,7 +4,7 @@ import { CookiesOptions } from "./config/cookiesConfig.js";
 import cookieParser from "cookie-parser";
 const app = express();
 const corsOptions = {
-    origin: ['http://127.0.0.1:3000', 'http://localhost:3000'],
+    origin: process.env.CORS_ORIGIN,
     methods: ['GET', 'POST', 'PUT', 'DELETE'], // Specify the allowed HTTP methods
     allowedHeaders: ['Content-Type', 'Authorization'], // Specify the allowed headers
     credentials: true // Enable credentials (cookies, authorization headers, etc)
