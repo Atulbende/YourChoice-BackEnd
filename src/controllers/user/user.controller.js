@@ -62,12 +62,13 @@ const userLogin = _async(async(req,res)=>{
                      if(!!req.cookies?._sessionRId && req.cookies?._sessionRId === curRefreshTokon){
                         console.log('Token:',req.cookie?._sessionRId,curRefreshTokon)
                         const accessToken= await JWTServices.generateAccessToken({userId:varUserId,userName:req.body.loginUserName});
-                        res.cookie('_sessionId',accessToken,CookiesOptions)
+                        res.cookie('_sessionId::',accessToken,CookiesOptions)
                         // return [accessToken];
-                        return   res.send(new APIResponse(200,"Login Succussfully!",{Roles:varRoles,accessTokenId:accessToken,refreshTokenId:RefreshToken}));
+                        return   res.send(new APIResponse(200,"Login Succussfully!!",{Roles:varRoles,accessTokenId:accessToken,refreshTokenId:RefreshToken}));
         
                      }else{
                        const [accessToken,refreshToken]=  await JWTServices.generateRefreshAccessToken({userId:varUserId,userName:req.body.loginUserName});
+                       res.cookie('_sessionId::',accessToken,CookiesOptions)
                        res.cookie('_sessionId',accessToken,CookiesOptions)
                        res.cookie('_sessionRId',refreshToken,CookiesOptions)
                        const getRefreshResponse = await  executeQuery('call UserRefreshTokenUpdate(?,?,@Per_Result);',[varUserId,refreshToken]);
