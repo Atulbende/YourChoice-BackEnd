@@ -7,11 +7,11 @@ const auth = _async(async (req, res, next) => {
     const token = req?.cookies?._sessionId || req?.headers?.Authorization?.split(' ')[1];
     const refreshToken = req?.cookies?._sessionRId;
     const user = await JWTServices.verifyAccessToken(token)
-    const Rid = await JWTServices.verifyRefreshToken(refreshToken);
-    if (!Rid) {
-        res.clearCookie('_sessionId', CookiesOptions).clearCookie('_sessionRId', CookiesOptions)
-        return res.status(403).json(new ApiError(403, false, `Refresh Token Expired`));
-    }
+    // const Rid = await JWTServices.verifyRefreshToken(refreshToken);
+    // if (!Rid) {
+    //     res.clearCookie('_sessionId', CookiesOptions).clearCookie('_sessionRId', CookiesOptions)
+    //     return res.status(403).json(new ApiError(403, false, `Refresh Token Expired`));
+    // }
     if (!!user?.data?.userId) {
         const result = await executeQuery('call authCheck(?,@Per_Status);', [user?.data?.userId]);
         const varStatus = result[0]?.Per_Status;
