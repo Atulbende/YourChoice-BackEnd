@@ -6,7 +6,7 @@ const app = express();
 const corsOptions = {
     origin: ['http://127.0.0.1:3000', 'http://localhost:3000','https://your-choice-front-end-git-master-atul-s-projects-b035b0ba.vercel.app'],
     methods: ['GET', 'POST', 'PUT', 'DELETE'], // Specify the allowed HTTP methods
-    allowedHeaders: ['Content-Type', 'Authorization'], // Specify the allowed headers
+    allowedHeaders: ['Content-Type', 'Authorization','X-App-ID'], // Specify the allowed headers
     credentials: true // Enable credentials (cookies, authorization headers, etc)
 };
 app.use(cors(corsOptions));

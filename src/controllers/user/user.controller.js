@@ -40,7 +40,7 @@ const userSinghUp = _async(async(req,res)=>{
 const userLogin = _async(async(req,res)=>{
         try {
         //Getting User Data from database using SP,
-        const result = await  executeQuery('call LoginCheck(?,@Per_Password,@Per_Roles,@Per_Status,@Per_UserId,@Per_RefreshToken);',[req.body.loginUserName]);
+        const result = await  executeQuery('call LoginCheck(?,@Per_Password,@Per_Roles,@Per_Status,@Per_UserId,@Per_RefreshToken,@Per_ShopId);',[req.body.loginUserName]);
         // stroing statubs,id role encrypted password string 
         const varStatus=result[0]?.Per_Status;
         const varUserId=result[0]?.Per_UserId;
@@ -49,6 +49,7 @@ const userLogin = _async(async(req,res)=>{
         const resPassword=result[0]?.Per_Password;
         const curRefreshTokon=result[0]?.Per_RefreshToken;
         const RefreshToken = req.cookies?._sessionRId;
+        const ShopId=result[0]?.Per_ShopId;
         // If user not found then return  402
         if(resPassword==='-1' || !resPassword) return res.status(404).json(new ApiError(404,false,"User Not Register"));
         // If user not Active then return 402
@@ -63,14 +64,14 @@ const userLogin = _async(async(req,res)=>{
                           const accessToken= await JWTServices.generateAccessToken({userId:varUserId,userName:req.body.loginUserName});
                         res.cookie('_sessionId',accessToken,CookiesOptions)
                         // return [accessToken];
-                        return   res.send(new APIResponse(200,"Login Succussfully!",{Roles:varRoles,accessTokenId:accessToken,refreshTokenId:RefreshToken}));
+                        return   res.send(new APIResponse(200,"Login Succussfully!",{Roles:varRoles,accessTokenId:accessToken,refreshTokenId:RefreshToken,shopId:ShopId}));
         
                      }else{
                        const [accessToken,refreshToken]=  await JWTServices.generateRefreshAccessToken({userId:varUserId,userName:req.body.loginUserName});
                        res.cookie('_sessionId',accessToken,CookiesOptions)
                        res.cookie('_sessionRId',refreshToken,CookiesOptions)
-                       const getRefreshResponse = await  executeQuery('call UserRefreshTokenUpdate(?,?,@Per_Result);',[varUserId,refreshToken]);
-                       return   res.send(new APIResponse(200,"Login Succussfully!",{Roles:varRoles,accessTokenId:accessToken,refreshTokenId:refreshToken}));
+                    //    const getRefreshResponse = await  executeQuery('call UserRefreshTokenUpdate(?,?,@Per_Result);',[varUserId,refreshToken]);
+                       return   res.send(new APIResponse(200,"Login Succussfully!",{Roles:varRoles,accessTokenId:accessToken,refreshTokenId:refreshToken,shopId:ShopId}));
                     //    return [accessToken,refreshToken];
                      }
                 //    const [accessToken,refreshToken]=await JWTServices.generateRefreshAccessToken(req.body.loginUserName);

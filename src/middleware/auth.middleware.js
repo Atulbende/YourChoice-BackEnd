@@ -4,6 +4,7 @@ import { _async } from "../utils/_async.js";
 import { ApiError } from "../utils/_error.js";
 import { CookiesOptions } from '../config/cookiesConfig.js';
 const auth = _async(async (req, res, next) => {
+   
     const token = req?.cookies?._sessionId || req?.headers?.Authorization?.split(' ')[1];
     const refreshToken = req?.cookies?._sessionRId;
     const user = await JWTServices.verifyAccessToken(token)
