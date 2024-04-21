@@ -4,11 +4,17 @@ import { CookiesOptions } from "./config/cookiesConfig.js";
 import cookieParser from "cookie-parser";
 const app = express();
 const corsOptions = {
-    origin: ['http://127.0.0.1:3000', 'http://localhost:3000','https://your-choice-front-end-git-master-atul-s-projects-b035b0ba.vercel.app'],
+    origin: ['http://127.0.0.1:3000','http://localhost:3002','http://localhost:3000','https://your-choice-front-end-git-master-atul-s-projects-b035b0ba.vercel.app'],
     methods: ['GET', 'POST', 'PUT', 'DELETE'], // Specify the allowed HTTP methods
     allowedHeaders: ['Content-Type', 'Authorization','AppId'], // Specify the allowed headers
     credentials: true // Enable credentials (cookies, authorization headers, etc)
 };
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*'); // or specify specific origins
+    res.header('Access-Control-Allow-Credentials', 'true');
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+    next();
+  });
 app.use(cors(corsOptions));
 app.use(cookieParser(CookiesOptions));
 app.use(express.json());
