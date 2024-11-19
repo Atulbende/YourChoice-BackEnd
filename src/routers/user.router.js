@@ -8,7 +8,7 @@ router.route('/logout').post(auth,userLogOut) ;
 router.route('/singup').post(userSinghUp);
 router.route('/refreshSession').post(refreshSession) ;
 router.route('/getRoles').get(auth,getRoles);
-router.route('/getGridUsers').get(auth,getGridUsers);
+router.route('/getGridUsers').get(getGridUsers);
 router.route('/openUser').post(auth,openUser);
 router.route('/saveUser').post(auth,saveUser);
 export default router;

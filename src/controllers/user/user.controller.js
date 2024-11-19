@@ -116,6 +116,7 @@ const refreshSession = _async(async(req,res)=>{
 })
 // user Role Save
 const getRoles=_async(async(req,res)=>{
+
     try {
         const rolesArray=  await executeQuery('select * from get_role_vw') || [];
             return      res.send(new APIResponse(200,"Roles list",{rolesArray:rolesArray}));
@@ -125,6 +126,7 @@ const getRoles=_async(async(req,res)=>{
     
 })
 const getGridUsers=_async(async(req,res)=>{
+   
     const usersGrids=  await executeQuery('select * from get_grid_user_vw') || [];
     return      res.send(new APIResponse(200,"users Grid",{usersGrids:usersGrids}));
 })
