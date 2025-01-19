@@ -5,8 +5,7 @@ import { APIResponse  } from "../../utils/_response.js";
 const getGridServices=_async(async(req,res)=>{
    const ShopId=req?.headers['appid'] || 1;
    const servicesGrid=  await executeQuery('select * from get_grid_services_vw where ShopId=?',[ShopId]);
-   console.log('red:',servicesGrid);
-if(servicesGrid) return   res.send(new APIResponse(200,"services Grid",{servicesGrid:servicesGrid}));
+   if(servicesGrid) return   res.send(new APIResponse(200,"services Grid",{servicesGrid:servicesGrid}));
 })
 const openService=_async(async(req,res)=>{
    const _id=req?.body?.Pid; 

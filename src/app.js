@@ -26,10 +26,13 @@ import commonRouters from './routers/common.router.js'
 import appKeywordRouters from './routers/app/keyword.router.js'
 import appCustomerSave from './routers/app/customer.router.js';
 import appServicesRouters from './routers/app/services.router.js' 
+import appAppointmentRouter from './routers/app/appointments.router.js';
 app.use('/api/v1/user',userRouters);
 app.use('/api/v1/common',commonRouters)
 // Application Routers
 app.use('/api/v1/app',appKeywordRouters);
 app.use('/api/v1/app',appCustomerSave);
 app.use('/api/v1/app',appServicesRouters);
+app.use('/api/v1/app',appAppointmentRouter);
+
 export { app }

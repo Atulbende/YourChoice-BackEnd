@@ -9,6 +9,10 @@ const sanitizeResponse=(_result)=>{
   const removeNullfromObject=()=>{
     
   }
+
+  const createListItems=(arr=[],label)=>{
+   return arr.map((_arr)=>({value:_arr.Pid,label:_arr[label]}))
+  }
 const getNewObj=(_obj)=>{
   const newObj={};
   _obj.forEach(_v => {
@@ -24,5 +28,6 @@ const com_message=(id)=>{
   {
     sanitizeResponse,
     getNewObj,
-    com_message
+    com_message,
+    createListItems
   }

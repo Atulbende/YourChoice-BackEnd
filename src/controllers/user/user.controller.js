@@ -64,14 +64,14 @@ const userLogin = _async(async(req,res)=>{
                           const accessToken= await JWTServices.generateAccessToken({userId:varUserId,userName:req.body.loginUserName});
                         res.cookie('_sessionId',accessToken,CookiesOptions)
                         // return [accessToken];
-                        return   res.send(new APIResponse(200,"Login Succussfully!",{Roles:varRoles,accessTokenId:accessToken,refreshTokenId:RefreshToken,shopId:ShopId}));
+                        return   res.send(new APIResponse(200,"Login Succussfully!",{Roles:varRoles,accessTokenId:accessToken,refreshTokenId:RefreshToken,shopId:ShopId,userId:varUserId}));
         
                      }else{
                        const [accessToken,refreshToken]=  await JWTServices.generateRefreshAccessToken({userId:varUserId,userName:req.body.loginUserName});
                        res.cookie('_sessionId',accessToken,CookiesOptions)
                        res.cookie('_sessionRId',refreshToken,CookiesOptions)
                     //    const getRefreshResponse = await  executeQuery('call UserRefreshTokenUpdate(?,?,@Per_Result);',[varUserId,refreshToken]);
-                       return   res.send(new APIResponse(200,"Login Succussfully!",{Roles:varRoles,accessTokenId:accessToken,refreshTokenId:refreshToken,shopId:ShopId}));
+                       return   res.send(new APIResponse(200,"Login Succussfully!",{Roles:varRoles,accessTokenId:accessToken,refreshTokenId:refreshToken,shopId:ShopId,userId:varUserId}));
                     //    return [accessToken,refreshToken];
                      }
                 //    const [accessToken,refreshToken]=await JWTServices.generateRefreshAccessToken(req.body.loginUserName);

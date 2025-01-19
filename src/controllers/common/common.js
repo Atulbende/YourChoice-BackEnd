@@ -6,10 +6,18 @@ const com_delete=_async(async(req,res)=>{
         try {
                 let id=req.body.id.toString();
                 const result=await executeQuery(`call ${req.body.activity}(?, ?,@Per_Result)`,[id,req.body.table]);
-                console.log('result:',result[0]);
                 return res.send(new APIResponse(200,"loaded",{result:result[0]?.Per_Result}));
         } catch (error) {
                 console.log('com_delete::',error);        
         }       
 })
-export {com_delete};
+const getAppointmentNo=_async(async(req,res)=>{
+                        try{
+                                const result=await executeQuery('select AppointmentNo from config');    
+                                const NewApNo=Number(result[0]?.AppointmentNo + 1);
+                                return res.send(new APIResponse(200,'AppointmentNo',{result:NewApNo}))     
+                        }catch(error){
+                                console.log('getAppointmentNo:',error)   
+                        }
+})
+export {com_delete,getAppointmentNo};
